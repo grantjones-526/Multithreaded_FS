@@ -4,12 +4,12 @@ class FCB
 {
 public:
     FCB();
-    FCB(int* first_datablock);
+    FCB(int start_block, int file_size);
     ~FCB();
     int get_file_size();
-    int* get_first_datablock();
+    int get_start_block();
 
 private:
     int file_size;
-    int* first_datablock = nullptr;
+    int start_block;
 };
