@@ -11,5 +11,5 @@ public:
 
 private:
     int file_size;
-    int start_block;
+    int start_block_pointer;
 };

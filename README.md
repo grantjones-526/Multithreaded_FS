@@ -1,5 +1,7 @@
-# Multithreaded_FS
-User-space file system simulator that models core OS-level file operations.
+Page
+Page number
+1
+of 6
 CS 445/445G Project 1: A Multithreaded File System (100 Points)
 (due at the midnight on 3/31/26)
 This project is a team project, and each team can have up to 2 students. In this project, you will
@@ -62,7 +64,7 @@ For each above-mentioned file operation, perform designs to clearly address the 
 • Outputs, i.e., return value
 • Data structures accessed (read/write)
 • Fine-grained locking (mutex lock per shared data structures, including open count)
-
+2
 3 Implementation (70 Points)
 You may use C/C++ or Java to implement this project. If Java is used, the simulation must explic-
 itly demonstrate multi-threaded execution using Java threads and appropriate synchronization primitives
@@ -183,3 +185,4 @@ sum += i;
 }
 pthread_exit(0);
 }
+6

@@ -10,6 +10,10 @@ swOFT_Entry::swOFT_Entry(FCB* fcb) {
 
 swOFT::swOFT() {}
 
+swOFT_Entry::~swOFT_Entry() {}
+
+swOFT::~swOFT() {}
+
 swOFT_Entry* swOFT::add_entry(string file_name, FCB* fcb) {
     swOFT_Entry* entry = new swOFT_Entry(fcb);
     this->swOFT_map[file_name] = entry;
@@ -30,7 +34,3 @@ bool swOFT::check_entry(string file_name) {
 void swOFT::erase_entry(string file_name) {
     this->swOFT_map.erase(file_name);
 }
-
-swOFT_Entry::~swOFT_Entry() {}
-
-swOFT::~swOFT() {}

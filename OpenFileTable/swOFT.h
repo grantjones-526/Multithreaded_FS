@@ -9,6 +9,7 @@ using namespace std;
 class swOFT_Entry {
 public:
     swOFT_Entry(FCB* fcb);
+    ~swOFT_Entry();
     int file_offset;
     int reference_count;                                                                                                                                                                    
     string access_mode;

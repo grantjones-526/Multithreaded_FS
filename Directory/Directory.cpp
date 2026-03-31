@@ -1,9 +1,7 @@
 #include "Directory.h"
 
 
-Directory::Directory() {
-
-}
+Directory::Directory() {}
 
 void Directory::add_entry(string file_name, FCB* entry) {
     this->directory_table.insert({file_name, entry});
@@ -24,6 +22,4 @@ void Directory::erase_entry(string file_name) {
     this->directory_table.erase(file_name);
 }
 
-Directory::~Directory() {
-
-}
+Directory::~Directory() {}

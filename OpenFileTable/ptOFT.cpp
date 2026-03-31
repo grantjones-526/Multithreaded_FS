@@ -8,6 +8,8 @@ ptOFT_Entry::ptOFT_Entry(int handle, swOFT_Entry* sw_entry) {
 ptOFT_Entry::~ptOFT_Entry() {}
                                                                                                                                                                                             
 ptOFT::ptOFT() {}
+
+ptOFT::~ptOFT() {}
                 
 ptOFT_Entry* ptOFT::add_entry(string file_name, swOFT_Entry* sw_entry) {
     ptOFT_Entry* entry = new ptOFT_Entry(this->next_handle, sw_entry);                                                                                                                      
@@ -30,5 +32,3 @@ bool ptOFT::check_entry(string file_name) {
 void ptOFT::erase_entry(string file_name) {
     this->ptOFT_map.erase(file_name);                                                                                                                                                       
 }                                    
-
-ptOFT::~ptOFT() {}

@@ -11,10 +11,9 @@ VCB::VCB() {
     this->bitmap[0] = true; // reserve block 0 for VCB
 }
 
-VCB::~VCB() {
+VCB::~VCB() {}
 
-}
-
+//this doesnt make sense... you would only get contiguous blocks based on file size from fcb. no need to pass in count, just get blocks based on filesize
 int VCB::get_contiguous_blocks(int count) {                                                                                                                                                 
     for (int i = 0; i <= num_blocks - count; i++) {                                                                                                                                         
         bool found = true;                                                                                                                                                                  
@@ -36,6 +35,7 @@ int VCB::get_contiguous_blocks(int count) {
     return -1; // not enough contiguous space                                                                                                                                               
 }
 
+//free space should use values provided by fcb (filesize and start block pointer)
 void VCB::free_space(int start, int count) {                                                                                                                                               
     for (int i = start; i < start + count; i++) {
         bitmap[i] = 0;

@@ -4,7 +4,10 @@ class SS {
 public:
     SS();
     ~SS();
-    char* get_address(int block_num);
+    void read_block(int block_index, char* buffer);
+    void write_block(int block_index, char* data);
 private:
-    char storage[512 * 2048] = {0};
+    static const int BLOCK_SIZE = 2048;
+    static const int NUM_BLOCKS = 512;
+    char* storage;
 };
