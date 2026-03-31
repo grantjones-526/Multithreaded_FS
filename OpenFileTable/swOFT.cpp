@@ -2,35 +2,48 @@
 
 using namespace std;
 
-swOFT_Entry::swOFT_Entry(FCB* fcb) {
-    this->fcb_pointer = fcb;
-    this->file_offset = 0;                                                                                                                                                                  
-    this->reference_count = 1;
-}   
+// When a file is first opened, its open count starts at 1.
+SystemFileEntry::SystemFileEntry(FileControlBlock* fcb) {
+    this->file_control_block = fcb;
+    this->open_count = 1;
+}
 
-swOFT::swOFT() {}
+SystemOpenFileTable::SystemOpenFileTable() {}
 
-swOFT_Entry::~swOFT_Entry() {}
+SystemFileEntry::~SystemFileEntry() {}
 
-swOFT::~swOFT() {}
+// When the table is destroyed, free all remaining entries.
+SystemOpenFileTable::~SystemOpenFileTable() {
+    for (auto& pair : this->open_files) {
+        delete pair.second;
+    }
+}
 
-swOFT_Entry* swOFT::add_entry(string file_name, FCB* fcb) {
-    swOFT_Entry* entry = new swOFT_Entry(fcb);
-    this->swOFT_map[file_name] = entry;
+// Add a new file to the system-wide open file table.
+SystemFileEntry* SystemOpenFileTable::add_entry(string file_name, FileControlBlock* fcb) {
+    SystemFileEntry* entry = new SystemFileEntry(fcb);
+    this->open_files[file_name] = entry;
     return entry;
 }
 
-swOFT_Entry* swOFT::get_entry(string file_name) {
-    if (!swOFT::check_entry(file_name)){
+// Look up a file by name. Returns nullptr if the file is not currently open.
+SystemFileEntry* SystemOpenFileTable::get_entry(string file_name) {
+    if (!this->check_entry(file_name)) {
         return nullptr;
     }
-    return this->swOFT_map.at(file_name);
-}                                                   
-
-bool swOFT::check_entry(string file_name) {
-    return this->swOFT_map.count(file_name) > 0;
+    return this->open_files.at(file_name);
 }
 
-void swOFT::erase_entry(string file_name) {
-    this->swOFT_map.erase(file_name);
+// Check whether a file is currently in the system-wide open file table.
+bool SystemOpenFileTable::check_entry(string file_name) {
+    return this->open_files.count(file_name) > 0;
+}
+
+// Remove a file from the table and free its entry.
+void SystemOpenFileTable::erase_entry(string file_name) {
+    auto it = this->open_files.find(file_name);
+    if (it != this->open_files.end()) {
+        delete it->second;
+        this->open_files.erase(it);
+    }
 }

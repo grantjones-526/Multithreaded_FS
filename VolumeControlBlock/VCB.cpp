@@ -2,68 +2,74 @@
 
 #include <vector>
 
-VCB::VCB() {
-    //default sizes can be adjusted here
+// Set up a disk with 512 blocks of 2KB each.
+// Block 0 is reserved for the volume control block itself,
+// so 511 blocks are available for file data.
+VolumeControlBlock::VolumeControlBlock() {
     this->num_blocks = 512;
-    this->size_block = 2048;
-    this->free_blocks = 511; // block 0 reserved for VCB
+    this->block_size = 2048;
+    this->free_blocks = 511;
     this->bitmap.assign(num_blocks, false);
-    this->bitmap[0] = true; // reserve block 0 for VCB
+    this->bitmap[0] = true; // block 0 is reserved
 }
 
-VCB::~VCB() {}
+VolumeControlBlock::~VolumeControlBlock() {}
 
-//this doesnt make sense... you would only get contiguous blocks based on file size from fcb. no need to pass in count, just get blocks based on filesize
-int VCB::get_contiguous_blocks(int count) {                                                                                                                                                 
-    for (int i = 0; i <= num_blocks - count; i++) {                                                                                                                                         
-        bool found = true;                                                                                                                                                                  
-        for (int j = i; j < i + count; j++) {                                                                                                                                               
-            if (bitmap[j] == 1) {                                                                                                                                                           
-                found = false;                                                                                                                                                              
-                i = j; // skip ahead
-                break;                                                                                                                                                                      
-            }   
-        }                                                                                                                                                                                   
+// Search for 'count' free blocks in a row on disk.
+// If found, mark them all as used and return the starting block number.
+// If there is not enough contiguous space, return -1.
+int VolumeControlBlock::get_contiguous_blocks(int count) {
+    for (int i = 0; i <= num_blocks - count; i++) {
+        bool found = true;
+        for (int j = i; j < i + count; j++) {
+            if (bitmap[j] == true) {
+                found = false;
+                i = j; // skip ahead past the used block
+                break;
+            }
+        }
         if (found) {
-            for (int j = i; j < i + count; j++) {                                                                                                                                           
-                bitmap[j] = 1;
+            // Mark all blocks in this range as used
+            for (int j = i; j < i + count; j++) {
+                bitmap[j] = true;
             }
             free_blocks -= count;
-            return i; // return starting block
-        }                                                                                                                                                                                   
+            return i;
+        }
     }
-    return -1; // not enough contiguous space                                                                                                                                               
+    return -1;
 }
 
-//free space should use values provided by fcb (filesize and start block pointer)
-void VCB::free_space(int start, int count) {                                                                                                                                               
+// Mark 'count' blocks starting at 'start' as free again.
+void VolumeControlBlock::free_space(int start, int count) {
     for (int i = start; i < start + count; i++) {
-        bitmap[i] = 0;
-        free_blocks++;                                                                                                                                                                      
+        bitmap[i] = false;
+        free_blocks++;
     }
-}  
+}
 
-void VCB::fill_block(int block_index, int file_size) {
-    // mark block as filled in bitmap
+// Mark a single block as used.
+void VolumeControlBlock::fill_block(int block_index, int file_size) {
     if (block_index < this->num_blocks) {
         this->bitmap[block_index] = true;
         this->free_blocks--;
     }
 }
 
-int VCB::get_num_blocks(){
+int VolumeControlBlock::get_num_blocks() {
     return this->num_blocks;
 }
 
-int VCB::get_size_block(){
-    return this->size_block;
+int VolumeControlBlock::get_block_size() {
+    return this->block_size;
 }
 
-int VCB::get_free_block(){
-    // go through bitmap to find first free space
+// Find the first single free block, mark it as used, and return its index.
+// Returns -1 if the disk is completely full.
+int VolumeControlBlock::get_free_block() {
     for (int i = 0; i < num_blocks; i++) {
-        if (bitmap[i] == 0){
-            bitmap[i] = 1; // mark block as used
+        if (bitmap[i] == false) {
+            bitmap[i] = true;
             free_blocks--;
             return i;
         }
@@ -71,6 +77,6 @@ int VCB::get_free_block(){
     return -1;
 }
 
-vector<bool> VCB::get_bitmap(){
+vector<bool> VolumeControlBlock::get_bitmap() {
     return this->bitmap;
 }

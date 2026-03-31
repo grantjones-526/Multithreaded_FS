@@ -1,21 +1,26 @@
 #include "FCB.h"
 
-FCB::FCB() {
+// Default constructor -- no file assigned yet.
+FileControlBlock::FileControlBlock() {
     this->file_size = 0;
-    this->start_block_pointer = -1;
+    this->start_block = -1;
 }
 
-FCB::FCB(int start_block, int file_size) {
-    this->start_block_pointer = start_block; //would the start_block not just be set from the first available free block found in vcb (maybe call vcb to get location)
+// Create a file control block for a file starting at 'start_block'
+// and occupying 'file_size' contiguous blocks.
+FileControlBlock::FileControlBlock(int start_block, int file_size) {
+    this->start_block = start_block;
     this->file_size = file_size;
 }
 
-int FCB::get_file_size() {
+// Returns how many blocks this file uses.
+int FileControlBlock::get_file_size() {
     return this->file_size;
 }
 
-int FCB::get_start_block() {
-    return this->start_block_pointer;
+// Returns the first block number where this file's data is stored.
+int FileControlBlock::get_start_block() {
+    return this->start_block;
 }
 
-FCB::~FCB() {}
+FileControlBlock::~FileControlBlock() {}
